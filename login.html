@@ -61,15 +61,25 @@
 
         .sign-upp{
             color: #d0d0d0;
-            margin-top:2%;
-            margin-bottom:2%;
-            margin-left:28%;
+            width:fit-content;
+            height:fit-content;
+            margin:auto;
+            margin-top:10px;
         }
 
         .signuplink{
             color: #fffcfc;
         }
 
+        .error{
+            background-color:red;
+            border-color:white;
+            color:#ffffff;
+            font-family:Georgia, 'Times New Roman', sans-serif;
+            width:fit-content;
+            height:fit-content;
+            margin:auto;
+        }
 
 
     </style>
@@ -77,18 +87,29 @@
 <body>
     <div>
         <h1>Login</h1>
-        <form method = "POST"
-              action = "{{ url_for('handle_post') }}">
+        <form action = "/login"
+              method = "POST">
             <input type = "text"
                    name = "username"
-                   placeholder = "Username">
+                   placeholder = "Username"
+                   required>
             <input type = "password"
                    name = "password"
-                   placeholder = "Password">
+                   placeholder = "Password"
+                   required>
             <br>
-            <button class = "submit" type = "submit">Log-In</button>
+            <a href = "/generator"><button class = "submit" type = "submit">Log-In</button></a>
         </form>
-        <p class = "sign-upp">Don't have a log-in? <a class = "signuplink" href = "/signup">Sign-Up Here!</a></p>
+        <p class = "sign-upp">Don't have a log-in? <a class = "signuplink" href = "/signupPage">Sign-Up Here!</a></p>
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+    <div class = "error">
+        <p class = "error">
+            {{messages[0][1]}}
+        </p>
+    </div>
+        {% endif %}
+    {% endwith %}
 </body>
 </html>

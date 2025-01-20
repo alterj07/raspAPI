@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, redirect, session, render_template, flash, url_for
+from flask import Flask, get_flashed_messages, request, jsonify, redirect, session, render_template, flash, url_for
 
 app = Flask(__name__)
 
@@ -6,52 +6,55 @@ app.secret_key = 'disneyrulez'
 
 
 users = {
-    'Jayden': 'abcdef',
-    'Joelle': 'qwerty'
+    'user': 'password'
 }
 
 @app.route('/')
+def startPage():
+    return render_template('startPage.html')
+
+@app.route('/loginPage')
 def loginPage():
     return render_template('login.html')
 
+@app.route('/signupPage')
+def signupPage():
+    return render_template('signup.html')
 
-
-
-@app.route('/handle_post', methods=['POST'])
-def handle_post ():
+@app.route('/login', methods=['GET', 'POST'])
+def login ():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        print(username, password)
         if username in users and users[username] == password:
-            return '<h1>Welcome!!!</h1>'
+            return render_template('main.html')
         else:
+            flash("Incorrect Username or Password")
             return render_template('login.html')
     else:
         return render_template('main.html')
 
 
-@app.route('/signup', methods = ['POST'])
+@app.route('/signup', methods = ['GET', 'POST'])
 def signup():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        confirm = request.form['confirm password']
+        confirm = request.form['password']
 
         if username in users:
-            flash('Username already exists!')
-            return redirect(url_for('signup'))
+            return redirect(url_for('/signup'))
         if password != confirm:
-            flash("Passwords don't match")
-            return redirect(url_for('signup'))
+            return redirect(url_for('/signup'))
         
         users[username] = password
-        flash('Signup Successful!!! Get your motivational quotes and enter your own too!')
-        return redirect(url_for('main'))
+        return redirect(url_for('/main'))
     return render_template('main.html')
 
-@app.route('/main')
-def main():
+
+
+@app.route('/generator')
+def generator():
     return render_template('main.html')
 
 
@@ -78,10 +81,6 @@ if __name__ == "__main__":
 #1 POST -> Create a resource
 
 
-#1. GET -> Quote Generator
-#2. GET ->
-#3. GET -> 
-#1. POST ->
 
 
 

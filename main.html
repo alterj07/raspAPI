@@ -8,11 +8,62 @@
             background-color: #212121;
             font-family: Georgia, 'Times New Roman', sans-serif;
         }
+        h1{
+            width:20%;
+            padding-top:2%;
+            padding-bottom:2%;
+            border-radius:15%;
+            background-color:rgb(44, 4, 48);
+            text-align:center;
+            margin:auto;
+            color:aliceblue;
+            
+        }
+        .generate{
+            background-color:#26425A;
+            color: #ffffff;
+            font-family: Georgia, 'Times New Roman', sans-serif;
+            margin-left:46%;
+            margin-top:10px;
+            text-align:center;
+            padding: 10px 20px;
+            border: 1px solid black;
+            cursor: pointer;
+        }
+
+        .generate:hover{
+            background-color:#2c151f;
+            padding: 10px 20px;
+            border: 1px solid black;
+        }
+
+        .container{
+            width: 70%; 
+            height: 200px;
+            border: 2px solid white;
+            background-color: black; 
+            margin:auto;
+            margin-top:50px;
+        }
     </style>
 </head>
 <body>
     <div>
-        <h1>Main</h1>
+        <h1>Quote Generator</h1>
+    </div>
+    <div>
+        <button class = "generate">Generate Quote</button>
+    </div>
+    <div class = "container">
+        <p> 
+            <!-- Quote Placeholder -->
+        </p>
     </div>
 </body>
 </html>
+
+<!-- Ideas:
+        - In the empty box, create a 'cursor thing' that
+        usually appears when you're typing in general
+        - Let the motivational quote come out typewriter style
+        - Cool button for generating new quote -->
