@@ -1,13 +1,16 @@
 from flask import Flask, get_flashed_messages, request, jsonify, redirect, session, render_template, flash, url_for
-
+import sqlite3, random;
+from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
 app.secret_key = 'disneyrulez'
 
 
-users = {
-    'user': 'password'
-}
+
+def get_database_connection():
+    conn = sqlite3.connect('quotes.db')
+    # conn.row_factory = sqlite3.Row
+    return conn
 
 @app.route('/')
 def startPage():
@@ -21,37 +24,64 @@ def loginPage():
 def signupPage():
     return render_template('signup.html')
 
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login ():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        if username in users and users[username] == password:
-            return render_template('main.html')
-        else:
-            flash("Incorrect Username or Password")
-            return render_template('login.html')
+    username = request.form['username']
+    password = request.form['password']
+    conn = get_database_connection()
+    user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+    pas = conn.execute('SELECT * FROM users WHERE USERNAME = ? AND PASSWORD = ?', (username, password)).fetchone()
+    conn.close()
+    if user and pas:
+        session['username'] = username 
+        return redirect(url_for('generator'))  
     else:
-        return render_template('main.html')
+        flash("Incorrect Username or Password")
+        return redirect(url_for('loginPage'))
 
 
-@app.route('/signup', methods = ['GET', 'POST'])
+@app.route('/signup', methods = ['POST'])
 def signup():
+    username = request.form['username']
+    password = request.form['password']
+    confirm = request.form['confirm']
+
+    if password != confirm:
+        flash("Passwords Don't Match")
+        return redirect(url_for('signupPage'))
+    
+    conn = get_database_connection()
+    existing_user = conn.execute('SELECT * FROM users WHERE username = ?', (username,)).fetchone()
+
+    if existing_user:
+        flash("Username already in use")
+        return redirect(url_for('signupPage'))
+    
+    conn = get_database_connection()
+    conn.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
+    conn.commit()
+    conn.close()
+    return redirect(url_for('generator'))
+
+
+
+
+@app.route('/quotes', methods = ['GET', 'POST'])
+def addQuote():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        confirm = request.form['password']
-
-        if username in users:
-            return redirect(url_for('/signup'))
-        if password != confirm:
-            return redirect(url_for('/signup'))
-        
-        users[username] = password
-        return redirect(url_for('/main'))
-    return render_template('main.html')
-
-
+        quote = request.form['quote']
+        author = request.form['author']
+        conn = get_database_connection()
+        conn.execute('INSERT INTO quotes (quote, author) VALUES (?, ?)', (quote, author))
+        conn.commit()
+        conn.close()
+        return redirect(url_for('/generator'))
+    elif request.method == 'GET':
+        conn = get_database_connection()
+        quotes = conn.execute('SELECT * FROM quotes').fetchall()
+        conn.close()
+        ranQuote = random.choice(quotes)
+        return render_template('main.html', quote = ranQuote[2], author = ranQuote[1])
 
 @app.route('/generator')
 def generator():
@@ -81,52 +111,3 @@ if __name__ == "__main__":
 #1 POST -> Create a resource
 
 
-
-
-
-#Unused Code For Future Reference:
-
-
-#Gets username and password, but they show up in the url
-# @app.route('/handle_get', methods=['GET'])
-# def handle_get():
-#     if request.method == 'GET':
-#         username = request.args['username']
-#         password = request.args['password']
-#         print(username, password)
-#         if username in users and users[username] == password:
-#             return '<h1>Welcome!!!</h1>'
-#         else:
-#             return '<h1>invalid credentials!</h1>'
-#     else:
-#         return render_template('login.html')
-
-
-
-
-
-
-#Beginer Guide
-
-# @app.route("/")
-# def home():
-#     return "Hello"
-
-# @app.route("/get-user/<user_id>")
-# def get_user(user_id):
-#     user_data = {
-#         "user_id": user_id,
-#         "name": "Joh Doe",
-#         "email": "john.doe@example.com"
-#     }
-
-#     extra = request.args.get("extra")
-#     if extra:
-#         user_data["extra"] = extra
-
-#     return jsonify(user_data), 200
-
-# @app.route("/create-user", methods=["POST"])
-# def create_user():
-#     data = request.get_json()
-#     return jsonify(data), 201

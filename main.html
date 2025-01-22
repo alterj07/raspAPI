@@ -19,6 +19,9 @@
             color:aliceblue;
             
         }
+        p{
+            color:#ffffff;
+        }
         .generate{
             background-color:#26425A;
             color: #ffffff;
@@ -39,11 +42,27 @@
 
         .container{
             width: 70%; 
-            height: 200px;
+            height: 100%;
             border: 2px solid white;
             background-color: black; 
             margin:auto;
             margin-top:50px;
+        }
+
+        .quote{
+            width:fit-content;
+            height:fit-content;
+            margin:auto;
+            margin-top:2.5em;
+            font-size:2em;
+            font-family: Georgia, 'Times New Roman', sans-serif;
+        }
+
+        .author{
+            width:fit-content;
+            height:fit-content;
+            margin:auto;
+            font-size:2em;
         }
     </style>
 </head>
@@ -52,11 +71,17 @@
         <h1>Quote Generator</h1>
     </div>
     <div>
-        <button class = "generate">Generate Quote</button>
+        <form action = "/quotes"
+            method = "GET">
+            <button class = "generate">Generate Quote</button>
+        </form>
     </div>
     <div class = "container">
-        <p> 
-            <!-- Quote Placeholder -->
+        <p class = "quote"> 
+            {{quote}}
+        </p>
+        <p class = "author">
+            - {{author}}
         </p>
     </div>
 </body>

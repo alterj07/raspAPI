@@ -48,7 +48,15 @@
             cursor: pointer;
         }
 
-        
+        .error{
+            background-color:red;
+            border-color:white;
+            color:#ffffff;
+            font-family:Georgia, 'Times New Roman', sans-serif;
+            width:fit-content;
+            height:fit-content;
+            margin:auto;
+        }
     </style>
 </head>
 <body>
@@ -74,5 +82,14 @@
             <a href = "/generator"><button class = "submit" type = "submit">Join Our Motivational Journey!</button></a>
         </form>
     </div>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+    <div class = "error">
+        <p class = "error">
+            {{messages[0][1]}}
+        </p>
+    </div>
+        {% endif %}
+    {% endwith %}
 </body>
 </html>
