@@ -3,10 +3,6 @@ import sqlite3, random;
 from werkzeug.security import generate_password_hash, check_password_hash
 app = Flask(__name__)
 
-app.secret_key = 'disneyrulez'
-
-
-
 def get_database_connection():
     conn = sqlite3.connect('quotes.db')
     # conn.row_factory = sqlite3.Row
